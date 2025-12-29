@@ -1,204 +1,161 @@
-🧠 Real-Time Ad Recommendation & Auction Platform
+# 🚀 Real-Time Ad Recommendation & Auction Platform
 
-This project is a full-stack advertisement recommendation and auction system that simulates how modern ad-tech platforms (such as Google Ads or Meta Ads) decide which advertisement to show to a user in real time. The system combines a machine learning–based CTR prediction model, a second-price auction mechanism, and a real-time serving API, with a modern frontend interface for interaction and visualization.
+This project is a **production-inspired ad-tech system** that demonstrates how modern advertising platforms decide **which ad to show**, **who wins the auction**, and **how much the advertiser pays**, all in real time.
 
-🚀 Project Overview
+The system combines a **machine learning–based CTR prediction model**, a **second-price auction mechanism**, and a **real-time serving API**, along with a modern frontend interface.
 
-When a user opens a page or application, multiple advertisers compete to display their ads. This platform:
+---
 
-Predicts the probability that a user will click on an ad (CTR)
+## 📌 Project Overview
 
-Ranks ads using bid, predicted CTR, and quality
+Whenever a user opens a page or application, multiple advertisers compete to display their ads. This platform:
 
-Runs a second-price auction to select the winning advertiser
+1. Predicts the probability that a user will click on an ad (CTR)
+2. Ranks ads using bid, predicted CTR, and quality
+3. Runs a **second-price auction**
+4. Serves the winning ad in **real time**
+5. Tracks business metrics such as revenue, CTR, CPC, and RPM
 
-Serves the winning ad in real time
+The design closely mirrors real-world ad platforms such as **Google Ads** and **Meta Ads**.
 
-Tracks business metrics such as revenue, CTR, CPC, and RPM
+---
 
-The system is designed to be scalable, realistic, and production-inspired, closely mirroring real-world ad platforms.
+## 🖥️ Frontend (UI Layer)
 
-🖥️ Frontend (UI Layer)
-Technology
+### Technology Stack
+- **Next.js (App Router)**
+- **TypeScript**
+- **Tailwind CSS**
+- **v0.dev** (UI generation)
 
-Next.js (App Router)
+### Role of the Frontend
+- Displays the ad platform interface
+- Provides a clean and responsive UI
+- Acts purely as the presentation layer
 
-TypeScript
+> **Attribution**  
+> The frontend UI was generated using **v0.dev** for rapid prototyping and design consistency.  
+>  
+> **All machine learning models, training pipelines, auction logic, business evaluation, and real-time serving systems were designed and implemented by me.**
 
-Tailwind CSS
+---
 
-v0.dev for rapid UI prototyping
+## 🧠 Machine Learning System (Implemented by Me)
 
-Responsibility
+### CTR Prediction Model
+- **Model:** LightGBM (Gradient Boosted Decision Trees)
+- **Task:** Click-through rate (CTR) prediction
+- **Primary Dataset:** Criteo Display Advertising Dataset
+- **Extended Dataset:** Avazu (used for fine-tuning in advanced experiments)
 
-Displays the ad platform interface
+### Feature Engineering
+- Log transformation of numerical features
+- Interaction features
+- Smoothed target encoding for categorical features
+- Robust handling of missing values
+- Strict separation of training and validation data
 
-Provides a clean and modern UI for interacting with the system
+### Training Strategy
+- Heavy offline training on millions of rows
+- CPU-optimized training using all available cores
+- Early stopping and validation-based tuning
+- Evaluation using AUC and ranking-aware metrics
 
-Acts as the presentation layer only
+---
 
-Important:
-The frontend UI was generated using v0 for rapid development and design consistency.
-All machine learning, backend logic, auction simulation, and real-time serving were designed and implemented by me.
-
-🧠 Machine Learning & Backend (Designed and Implemented by Me)
-Core ML System
-
-Model: LightGBM (Gradient Boosted Decision Trees)
-
-Task: CTR (Click-Through Rate) prediction
-
-Datasets:
-
-Criteo Display Advertising Dataset (primary)
-
-Avazu (used for fine-tuning and validation in extended versions)
-
-Feature Engineering
-
-Numerical feature log transforms
-
-Interaction features
-
-Smoothed target encoding for categorical features
-
-Careful handling of missing values
-
-No data leakage between train and validation
-
-Training Strategy
-
-Heavy offline training on millions of rows
-
-CPU-optimized training using all available cores
-
-Proper early stopping and validation
-
-AUC-based evaluation
-
-🏆 Ad Ranking & Auction System
-Ad Ranking Formula
+## 🏆 Ad Ranking & Auction Logic
 Ad Rank = Bid × Predicted CTR × Quality Score
 
-Auction Mechanism
 
-Second-price auction
+### Auction Type
+- **Second-price auction**
+- The highest-ranked advertiser wins
+- The winner pays just enough to beat the second-highest competitor
 
-The winning advertiser pays just enough to beat the second-highest competitor
+This mechanism encourages truthful bidding, prevents overbidding, and ensures stable long-term revenue.
 
-Encourages honest bidding
+---
 
-Prevents budget exhaustion
+## ⚡ Real-Time Ad Serving
 
-Stabilizes long-term revenue
+The trained model is deployed in a **real-time serving flow**:
 
-⚡ Real-Time Serving System
+1. A user request arrives
+2. Features are processed instantly
+3. CTR is predicted using the trained LightGBM model
+4. Ads are ranked and auctioned
+5. The winning ad is returned within milliseconds
 
-The trained model is deployed in a real-time serving setup where:
+### Key Characteristics
+- Low-latency decisions (milliseconds)
+- In-memory budget tracking
+- Stateless prediction with stateful budget updates
+- Production-style API design
 
-A user request arrives
+---
 
-Features are processed instantly
+## 📊 Business Evaluation
 
-CTR is predicted using the trained LightGBM model
+Beyond ML accuracy, the system evaluates **real business impact** using:
 
-Ads are ranked and auctioned
+- Impressions
+- Clicks
+- CTR (Click-Through Rate)
+- Revenue
+- Average CPC (Cost Per Click)
+- RPM (Revenue per 1,000 impressions)
+- Advertiser budget utilization
 
-The winning ad is returned in milliseconds
+This ensures the model is **commercially meaningful**, not just technically accurate.
 
-Key Properties
+---
 
-Low latency (sub-20ms decision time)
+## 📂 Repository Structure
 
-In-memory budget tracking
-
-Stateless prediction with stateful budget updates
-
-Production-style API design
-
-📊 Business Evaluation Metrics
-
-The system is evaluated not only on ML accuracy but also on business impact:
-
-Clicks
-
-Impressions
-
-CTR (Click-Through Rate)
-
-Revenue
-
-Average CPC (Cost Per Click)
-
-RPM (Revenue per 1000 impressions)
-
-Budget utilization
-
-This ensures the model is commercially viable, not just technically accurate.
-
-📂 Repository Structure
-ad-platform-model/
-├── app/                # Next.js App Router pages
-│   ├── layout.tsx
-│   ├── page.tsx
-│   └── globals.css
-├── components/         # UI components
-├── hooks/              # Custom React hooks
-├── lib/                # Utility functions
-├── public/             # Static assets
-├── styles/             # Global styles
+Ad-Recommendation-Auction-Simulator/
+├── app/ # Next.js App Router pages
+│ ├── layout.tsx
+│ ├── page.tsx
+│ └── globals.css
+├── components/ # Reusable UI components
+├── hooks/ # Custom React hooks
+├── lib/ # Utility functions
+├── public/ # Static assets
+├── styles/ # Global styles
 ├── package.json
 ├── next.config.mjs
 └── tsconfig.json
 
 
-The ML training scripts, auction simulation, and real-time backend are maintained as a separate ML system, designed and implemented by me.
+> **Note:**  
+> The ML training scripts, auction simulation, and real-time backend are part of a separate ML system developed and maintained by me.
 
-🧩 How This Fits Together
+---
 
-Frontend: User interaction & visualization (v0 + Next.js)
+## ⭐ Key Highlights
 
-ML Pipeline: CTR prediction, feature engineering, training (LightGBM)
+- Realistic ad-tech system design
+- Scalable ML training pipeline
+- Business-aware evaluation metrics
+- Production-style real-time serving
+- Clear separation of frontend and ML responsibilities
 
-Auction Engine: Second-price auction with ranking
+---
 
-Serving Layer: Real-time API for ad decisions
+## 🔮 Future Improvements
 
-Evaluation: Offline ML metrics + online business metrics
+- Redis-based shared budget management
+- User and advertiser embeddings
+- Reinforcement learning for bid optimization
+- Multi-slot ad auctions
+- Live dashboards for metrics
+- A/B testing framework
 
-🏁 Key Highlights
+---
 
-Realistic ad-tech system design
+## 🧠 One-Line Summary
 
-Scalable ML training pipeline
+> **A production-inspired real-time ad recommendation and auction platform combining machine learning, second-price auctions, and a modern frontend interface.**
 
-Business-aware evaluation
 
-Production-style real-time serving
-
-Clear separation of frontend and ML/backend responsibilities
-
-📌 Attribution
-
-Frontend UI: Generated using v0.dev
-
-System Design, ML Models, Training, Auctions, Evaluation, and Real-Time Logic:
-Designed and implemented by me
-
-📈 Future Improvements
-
-Redis-based shared budget management
-
-User and advertiser embeddings
-
-Reinforcement learning for bidding optimization
-
-Multi-slot auctions
-
-Live dashboard for metrics
-
-A/B testing framework
-
-🧠 One-Line Summary
-
-A production-inspired real-time ad recommendation and auction system combining machine learning, second-price auctions, and a modern frontend interface.
+### Ad Ranking Formula
